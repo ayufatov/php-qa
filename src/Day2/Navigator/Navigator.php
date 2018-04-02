@@ -4,31 +4,6 @@ namespace Day2\Navigator;
 
 class Navigator
 {
-
-    /*
-Написать на PHP класс для поиска самого дешевого маршрута. Метод должна получать на входе три параметра:
-
-название населенного пункта отправления
-название населенного пункта прибытия
-список, каждый элемент которого представляет собой названия неких двух населенных пунктов и стоимость проезда от одного населенного пункта до другого.
-На выходе функция должна возвращать самый дешевый маршрут между населенными пунктами отправления и прибытия, в виде списка транзитных населенных пунктов (в порядке следования), а также общую стоимость проезда.
-
-$routes = [];
-$routes[] = new Route(['from'=>'a', 'to'=>'b', 'price'=>100]);
-$routes[] = new Route(['from'=>'c', 'to'=>'d', 'price'=>300]);
-$routes[] = new Route(['from'=>'b', 'to'=>'c', 'price'=>200]);
-$routes[] = new Route(['from'=>'a', 'to'=>'d', 'price'=>900]);
-$routes[] = new Route(['from'=>'b', 'to'=>'d', 'price'=>300]);
-
-$find->shortestPath('a', 'd', $routes);
-return информации типа:
-
-Из: a
-В: d
-Путь: a -> b -> d
-Цена: 400
-    */
-
     /** @var array  */
     private $routes = [];
 
@@ -41,6 +16,7 @@ return информации типа:
     /** @var array  */
     private $bestPriceForLocation = [];
 
+    /** @var array  */
     private $bestPathForLocation = [];
 
     /** @var string  */
@@ -48,11 +24,6 @@ return информации типа:
 
     /** @var string  */
     private $to = '';
-
-
-
-
-
 
     /**
      * @param string $from
@@ -62,7 +33,6 @@ return информации типа:
      */
     public function cheaperShortestPath(string $from, string $to, array $routes): array
     {
-
         $currentLocation = $from;
 
         $this->routes = $routes;
@@ -77,112 +47,53 @@ return информации типа:
         $this->setVisitedLocation();
                 // Задаем начальную стоимость до каждого пункта равную 999999 а для начального 0
         $this->setBestPriceForLocation();
-                // Задаем начальный лучший путь до точки равный '';
+        // Задаем начальный путь до каждого пункта равный '', а для начального 'a'
         $this->setBestPathForLocation();
                 // Находим вершину с наидешевым путем от текущей не посещенной вершины из соседних
-        $currentLocation = $this->availibleLocationWithPathHaveMinPriceForThisLocation($from);
-        ///$currentLocation = $from;
-        //$visitedLocation = $this->visitedLocation;
+                // Помечаем текущий элемент как посещенный
+        $this->visitedLocation[$currentLocation] = true;
 
-        $this->getAllPathFromLocation($from);
-
-        //$this->visitedLocation[$currentLocation] = true;
-
+                // Проверяем ближайшие вершины к текущей и обновляем их стоимость и пути
         foreach ($this->location as $location) {
-            if ($this->visitedLocation[$location] == false) {
-                echo "\n" . 'location = ' . $location . " false";
+            $this->mainAlgoritm($this->getAllRoutesFromLocation($currentLocation));
+            $currentLocation = $this->availibleLocationWithPathHaveMinPriceForThisLocation($currentLocation);
+            // Помечаем текущий элемент как посещенный
+            $this->visitedLocation[$currentLocation] = true;
+        }
+
+                // Записываем путь в нужном формате
+        $bestPath = '';
+        for($i = 0; $i < strlen($this->bestPathForLocation[$to]); $i++) {
+            $bestPath .= substr($this->bestPathForLocation[$to], $i, 1);
+            if ($i < strlen($this->bestPathForLocation[$to]) - 1) {
+                $bestPath .= ' -> ';
             }
         }
 
-        // Сделать функцию которая ищет все пути из текущей вершины
-        // текущую вершины
-        // возвращает массив путей
+                // Вывод решения
+        $bestPrice = $this->bestPriceForLocation[$to];
 
-
-        //echo "\n" . '$visitedLocation';
-        //print_r($this->visitedLocation);
-
-
-
-
-
-
-
-        //print_r($location);
-
-                // Берем вершину и вычисляем стоимость пути до её соседей
-                // Берем каждый путь
-        //foreach($routes as $rout) {
-
-                // Берем каждую вершину
-
- //       foreach ($location as $currentLocation) {
-                //array_push($bestNavigation, []);
-                // Берем каждый путь
-  //              foreach($routes as $rout) {
-                    // Проверяем сколько стоит каждый путь из текущей вершины и записываем если он лучший
-                    //echo "\n" . 'rout[price] = ' .$rout['price'];
-   //                 if ($rout['from'] == $currentLocation) {
-                        /*&& ($bestPriceForLocation[$currentLocation] == 0
-                           || $bestPriceForLocation[$currentLocation] > $rout['price']
-                        )*/
-                        //$path = [$rout['from'], $rout['to']];
-                        //$price = $rout['price'];
-                        //$bestPriceForLocation[$rout['to']] = $rout['price'];
-
-                        //echo "\n";
-                        //echo '$currentLocation = ' . $currentLocation . ' $rout[\'price\'] = ' . $rout['price'];
-  //                  }
-  //              }
-
-                // Лучший путь из начальной вершины в текущую
-
-                //echo "\n" . '$bestNavigation:';
-                //print_r($bestNavigation);
-  //      }
-
-        //echo "\n" . '$bestPriceForLocation:';
-        //print_r($bestPriceForLocation);
-        //}
-
-        //echo "\n" . '$bestNavigation final:';
-                //print_r($bestNavigation);
-
-        /*foreach ($bestNavigation as $thisBest) {
-            if ($thisBest['from'] == $from && $thisBest['to'] == $to) {
-                print_r($thisBest);
-            }
-        }*/
-
-
-
-
-                    // Вывод решения
-        $bestFrom = $from;
-        $bestTo = $to;
-        $bestPath = 'a -> b -> d';
-        $bestPrice = 400;
+                // Если решения нет, то вывести 'No path' с ценой 0
+        if ($bestPath == '') {
+            $bestPath = 'No path';
+            $bestPrice = 0;
+        }
 
         $solution = [
-            "Из: $bestFrom",
-            "В: $bestTo",
+            "Из: $from",
+            "В: $to",
             "Путь: $bestPath",
             "Цена: $bestPrice",
         ];
 
-        echo "\n" . '$solution:';
-        print_r($solution);
         return $solution;
     }
 
-
+    // Вычисляем все возможные локации $location
     private function setLocations()
     {
-        // Вычисляем все возможные локации $location
         $routes = $this->routes;
         $location = $this->location;
-        //echo "\n";
-        //$location = [];
         count($routes);
         foreach ($routes as $routFrom) {
             array_push($location, $routFrom['from']);
@@ -194,32 +105,25 @@ return информации типа:
 
         // Массив со всеми локациями
         $this->location = array_unique($location);
-        //echo "\n" . '$location:';
-        //print_r($location);
     }
 
-
+    // Задаем признак обработки вершины
     private function setVisitedLocation()
     {
         $location = $this->location;
-        // Задаем признак обработки вершины
         $visitedLocation =[];
         foreach ($location as $currentLocation) {
             $visitedLocation += [
                 $currentLocation => false,
             ];
         }
-        //echo "\n" . '$visitedLocation:';
-        //print_r($visitedLocation);
 
         $this->visitedLocation = $visitedLocation;
     }
 
-
+    // Задаем начальную стоимость до каждого пункта равную 999999 а для начального 0
     private function setBestPriceForLocation()
     {
-        // Задаем начальную стоимость до каждого пункта равную 0
-
         $bestPriceForLocation = $this->bestPriceForLocation;
         foreach ($this->location as $currentLocation) {
             if ($currentLocation == $this->from) {
@@ -234,80 +138,90 @@ return информации типа:
         }
 
         $this->bestPriceForLocation = $bestPriceForLocation;
-        //echo "\n" . '$bestPriceForLocation:';
-        //print_r($bestPriceForLocation);
     }
 
+    // Задаем начальный путь до каждого пункта равный '', а для начального 'a'
     private function setBestPathForLocation()
     {
 
         $bestPathForLocation = $this->bestPathForLocation;
-        // Задаем начальную стоимость до каждого пункта равную 0
 
         foreach ($this->location as $currentLocation) {
+            if ($currentLocation == $this->from) {
+                $bestPathForLocation += [
+                    $currentLocation => $currentLocation,
+                ];
+            } else {
                 $bestPathForLocation += [
                     $currentLocation => '',
                 ];
+            }
         }
         $this->bestPathForLocation = $bestPathForLocation;
-        //echo "\n" . '$bestPathForLocation:';
-        //print_r($bestPathForLocation);
     }
 
+    // Находим вершину с наидешевым путем от текущей не посещенной вершины из соседних
     private function availibleLocationWithPathHaveMinPriceForThisLocation(string $thisLocation): string
     {
-        // Находим вершину с наидешевым путем от текущей не посещенной вершины из соседних
-        $availibleLocationWithPathHaveMinPriceForThisLocation = $thisLocation;
+        $availibleLocation = $thisLocation;
 
         // Вызовем функцию которая вернет массив путей для текущей вершины
-        $routesFromLocation = $this->getAllPathFromLocation($thisLocation);
+        $routesFromLocation = $this->getAllRoutesFromLocation($availibleLocation);
 
-        //echo "\n" . '$routesFromLocation:';
-        //print_r($routesFromLocation);
         // Достаем все вершины куда можно пройти от текущей вершины
         $nearLocation = [];
-        //$nearLocation = [$thisLocation => $this->bestPriceForLocation[$thisLocation]];
+
         foreach ($routesFromLocation as $route) {
-            //echo "\n" . '$route:';
-            //print_r($route);
-            //echo "\n" . '$route[\'to\'] = ' . $route['to'];
             $nearLocation += [$route['to'] => $this->bestPriceForLocation[$route['to']]];
-            //echo "\n" . '$nearLocation:';
-            //print_r($nearLocation);
         }
 
-        //echo "\n" . '$nearLocation final:';
-        //print_r($nearLocation);
-
         // Проверяем, если есть доступная вершина с лучшей ценой меньше чем текущая вершина, то она становится текущей
-        foreach ($nearLocation as $location => $bestPrice) {
+        foreach ($nearLocation as $location => $price) {
             if (!$this->visitedLocation[$location]) {
-
-                if ($bestPrice < $this->bestPriceForLocation[$thisLocation]) {
-                    $availibleLocationWithPathHaveMinPriceForThisLocation = $location;
+                if (
+                    $price <= $this->bestPriceForLocation[$availibleLocation]
+                        || ($this->bestPriceForLocation[$availibleLocation] == 0)
+                ) {
+                    $availibleLocation = $location;
                 }
             }
         }
 
-        // Помечаем текущий элемент как посещенный
-        $this->visitedLocation[$availibleLocationWithPathHaveMinPriceForThisLocation] = true;
-
-        return $availibleLocationWithPathHaveMinPriceForThisLocation;
+        return $availibleLocation;
     }
 
-    private function getAllPathFromLocation(string $thisLocation): array
+    private function mainAlgoritm(array $allRouteFromLocation)
     {
-        $allPathFromLocation = [];
-        foreach ($this->routes as $route){
-            if ($route['from'] == $thisLocation){
-                array_push($allPathFromLocation, $route);
+        /* Если лучшая стоимость соседней вершины > лучшая стоимость текущей + стоимость пути от текущей к соседней, то
+        изменим лучшая стоимость соседней вершины = лучшая стоимость текущей + стоимость пути от текущей к соседней и
+        лучшая длина пути до соседней вершины = длина пути до текущей + соседняя вершина
+
+        На вход получаем соседнюю вершину, текущую вершину
+        В результате присваиваем лучшую цену соседней вершины и лучший путь до соседней вершины
+        */
+        foreach ($allRouteFromLocation as $route) {
+            if (
+                $this->bestPriceForLocation[$route['to']] >
+                ($this->bestPriceForLocation[$route['from']] + $route['price'])
+            ) {
+                $this->bestPriceForLocation[$route['to']] =
+                    $this->bestPriceForLocation[$route['from']] + $route['price'];
+                $this->bestPathForLocation[$route['to']] =
+                    $this->bestPathForLocation[$route['from']] . $route['to'];
             }
         }
-        $this->routes;
-
-        //echo "\n" . '$allPathFromLocation';
-        //print_r($allPathFromLocation);
-        return $allPathFromLocation;
     }
 
+    // Находим все пути из текущей локации
+    private function getAllRoutesFromLocation(string $thisLocation): array
+    {
+        $allRouteFromLocation = [];
+        foreach ($this->routes as $route){
+            if ($route['from'] == $thisLocation){
+                array_push($allRouteFromLocation, $route);
+            }
+        }
+
+        return $allRouteFromLocation;
+    }
 }

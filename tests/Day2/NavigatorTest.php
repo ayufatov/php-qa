@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class NavigatorTest extends TestCase
 {
-
     /** @var  Navigator */
     private $navigator;
 
@@ -15,22 +14,6 @@ class NavigatorTest extends TestCase
     {
         $this->navigator = new Navigator();
     }
-    /*
-    $routes = [];
-$routes[] = new Route(['from'=>'a', 'to'=>'b', 'price'=>100]);
-$routes[] = new Route(['from'=>'c', 'to'=>'d', 'price'=>300]);
-$routes[] = new Route(['from'=>'b', 'to'=>'c', 'price'=>200]);
-$routes[] = new Route(['from'=>'a', 'to'=>'d', 'price'=>900]);
-$routes[] = new Route(['from'=>'b', 'to'=>'d', 'price'=>300]);
-
-$find->shortestPath('a', 'd', $routes);
-return информации типа:
-
-Из: a
-В: d
-Путь: a -> b -> d
-Цена: 400
-    */
 
     /**
      * @dataProvider successfulProvider
@@ -56,6 +39,51 @@ return информации типа:
             'd',
             'a -> b -> d',
             400,
+            [
+                ['from'=>'a', 'to'=>'b', 'price'=>100],
+                ['from'=>'c', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'c', 'price'=>200],
+                ['from'=>'a', 'to'=>'d', 'price'=>900],
+                ['from'=>'b', 'to'=>'d', 'price'=>300],
+            ]
+        ];
+
+        yield
+        [
+            'a',
+            'c',
+            'a -> b -> c',
+            300,
+            [
+                ['from'=>'a', 'to'=>'b', 'price'=>100],
+                ['from'=>'c', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'c', 'price'=>200],
+                ['from'=>'a', 'to'=>'d', 'price'=>900],
+                ['from'=>'b', 'to'=>'d', 'price'=>300],
+            ]
+        ];
+
+        yield
+        [
+            'b',
+            'd',
+            'b -> d',
+            300,
+            [
+                ['from'=>'a', 'to'=>'b', 'price'=>100],
+                ['from'=>'c', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'c', 'price'=>200],
+                ['from'=>'a', 'to'=>'d', 'price'=>900],
+                ['from'=>'b', 'to'=>'d', 'price'=>300],
+            ]
+        ];
+
+        yield
+        [
+            'd',
+            'b',
+            'No path',
+            0,
             [
                 ['from'=>'a', 'to'=>'b', 'price'=>100],
                 ['from'=>'c', 'to'=>'d', 'price'=>300],
