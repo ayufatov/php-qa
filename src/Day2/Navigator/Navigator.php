@@ -175,6 +175,12 @@ class Navigator
             $nearLocation += [$route['to'] => $this->bestPriceForLocation[$route['to']]];
         }
 
+        // Ставим первую из этих вершин текущей
+        foreach ($nearLocation as $location => $price) {
+            $availibleLocation = $location;
+            break;
+        }
+
         // Проверяем, если есть доступная вершина с лучшей ценой меньше чем текущая вершина, то она становится текущей
         foreach ($nearLocation as $location => $price) {
             if (!$this->visitedLocation[$location]) {

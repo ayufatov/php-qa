@@ -33,6 +33,7 @@ class NavigatorTest extends TestCase
 
     public function successfulProvider()
     {
+        // Навигатор 1
         yield
         [
             'a',
@@ -48,6 +49,7 @@ class NavigatorTest extends TestCase
             ]
         ];
 
+        // Навигатор 2
         yield
         [
             'a',
@@ -63,6 +65,7 @@ class NavigatorTest extends TestCase
             ]
         ];
 
+        // Навигатор 3
         yield
         [
             'b',
@@ -78,6 +81,7 @@ class NavigatorTest extends TestCase
             ]
         ];
 
+        // Кейс когда нет пути
         yield
         [
             'd',
@@ -90,6 +94,57 @@ class NavigatorTest extends TestCase
                 ['from'=>'b', 'to'=>'c', 'price'=>200],
                 ['from'=>'a', 'to'=>'d', 'price'=>900],
                 ['from'=>'b', 'to'=>'d', 'price'=>300],
+            ]
+        ];
+
+        yield
+        [
+            'a',
+            'd',
+            'a -> b -> d',
+            300,
+            [
+                ['from'=>'a', 'to'=>'b', 'price'=>100],
+                ['from'=>'c', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'c', 'price'=>200],
+                ['from'=>'a', 'to'=>'d', 'price'=>900],
+                ['from'=>'b', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'d', 'price'=>200],
+            ]
+        ];
+
+        // Расширенный навигатор 1
+        yield
+        [
+            'a',
+            'v',
+            'a -> b -> d -> v',
+            600,
+            [
+                ['from'=>'a', 'to'=>'b', 'price'=>100],
+                ['from'=>'c', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'c', 'price'=>200],
+                ['from'=>'a', 'to'=>'d', 'price'=>900],
+                ['from'=>'b', 'to'=>'d', 'price'=>300],
+                ['from'=>'d', 'to'=>'v', 'price'=>200],
+            ]
+        ];
+
+        // Расширенный навигатор 2
+        yield
+        [
+            'a',
+            'v',
+            'a -> b -> c -> v',
+            350,
+            [
+                ['from'=>'a', 'to'=>'b', 'price'=>100],
+                ['from'=>'c', 'to'=>'d', 'price'=>300],
+                ['from'=>'b', 'to'=>'c', 'price'=>200],
+                ['from'=>'a', 'to'=>'d', 'price'=>900],
+                ['from'=>'b', 'to'=>'d', 'price'=>300],
+                ['from'=>'d', 'to'=>'v', 'price'=>200],
+                ['from'=>'c', 'to'=>'v', 'price'=>50],
             ]
         ];
     }
