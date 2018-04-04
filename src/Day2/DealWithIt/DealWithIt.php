@@ -2,6 +2,8 @@
 
 namespace Day2\DealWithIt;
 
+use Prophecy\Exception\InvalidArgumentException;
+
 class DealWithIt
 {
 
@@ -11,8 +13,12 @@ class DealWithIt
      */
     public function hideEmail(string $string): array
     {
+        $this->emailIsEmpty($string);
+
         preg_match_all( "#[^\s]+@\S+\.[a-zа-я]{2,3}#ui", $string, $matches);
         $solution = [];
+
+        $this->noEmailInString($matches[0]);
 
         foreach ($matches[0] as $match) {
             $match = preg_replace('#.#ui', '*', $match);
@@ -28,6 +34,7 @@ class DealWithIt
      */
     public function hideEmailNoPreg(string $string): array
     {
+        $this->emailIsEmpty($string);
 
         $solution = [];
         $massivSlov = explode(' ', $string);
@@ -46,11 +53,35 @@ class DealWithIt
             }
         }
 
+        $this->noEmailInString($matches);
+
         foreach ($matches as $match) {
             $match = str_repeat('*', mb_strlen($match));
             array_push($solution, $match);
         }
 
         return $solution;
+    }
+
+    /**
+     * @param string $string
+     */
+    public function emailIsEmpty(string $string)
+    {
+        if ($string == '') {
+            throw new InvalidArgumentException('Строка пуста');
+        }
+    }
+
+    /**
+     * @param array $matches
+     */
+    public function noEmailInString(array $matches)
+    {
+        echo "\n" . 'matches:';
+        print_r($matches);
+        if ($matches == null) {
+            throw new InvalidArgumentException('В строке нет емайлов');
+        }
     }
 }
