@@ -7,12 +7,19 @@ use Prophecy\Exception\InvalidArgumentException;
 class DealWithIt
 {
 
+    /** @var float  */
+    private $workTimeWithPreg = 0.00;
+
+    /** @var float  */
+    private $workTimeWithoutPreg = 0.00;
+
     /**
      * @param string $string
      * @return array
      */
-    public function hideEmail(string $string): array
+    public function hideEmailPreg(string $string): array
     {
+        $start = microtime(true);
         $this->emailIsEmpty($string);
 
         preg_match_all( "#[^\s]+@\S+\.[a-zа-я]{2,3}#ui", $string, $matches);
@@ -25,6 +32,7 @@ class DealWithIt
             array_push($solution, $match);
         }
 
+        $this->workTimeWithPreg = microtime(true) - $start;
         return $solution;
     }
 
@@ -34,6 +42,7 @@ class DealWithIt
      */
     public function hideEmailNoPreg(string $string): array
     {
+        $start1 = microtime(true);
         $this->emailIsEmpty($string);
 
         $solution = [];
@@ -60,6 +69,7 @@ class DealWithIt
             array_push($solution, $match);
         }
 
+        $this->workTimeWithoutPreg = microtime(true) - $start1;
         return $solution;
     }
 
@@ -78,10 +88,26 @@ class DealWithIt
      */
     public function noEmailInString(array $matches)
     {
-        echo "\n" . 'matches:';
-        print_r($matches);
         if ($matches == null) {
             throw new InvalidArgumentException('В строке нет емайлов');
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function whoFastSpeedwork(): string
+    {
+
+        $workTimeWithPreg = $this->workTimeWithPreg;
+        $workTimeWithoutPreg = $this->workTimeWithoutPreg;
+
+        if ($workTimeWithPreg > $workTimeWithoutPreg) {
+            $whoFastSpeedwork = 'Функция без регулярки быстрее!!!';
+        } else {
+            $whoFastSpeedwork = 'Функция c регуляркой быстрее!!!';
+        }
+
+        return $whoFastSpeedwork;
     }
 }

@@ -27,12 +27,13 @@ class DealWithItTest extends TestCase
 
         $this->assertEquals(
             ['*****************', '******************', '*****************'],
-            $this->hide->hideEmail($this->string)
+            $this->hide->hideEmailPreg($this->string)
         );
         $this->assertEquals(
             ['*****************', '******************', '*****************'],
             $this->hide->hideEmailNoPreg($this->string)
         );
+        echo "\n" . $this->hide->whoFastSpeedwork();
     }
 
     /**
@@ -41,7 +42,7 @@ class DealWithItTest extends TestCase
      */
     public function test_deal_with_it_hide_email_empty()
     {
-            $this->hide->hideEmail('');
+            $this->hide->hideEmailPreg('');
             $this->hide->hideEmailNoPreg('');
     }
 
@@ -54,7 +55,7 @@ class DealWithItTest extends TestCase
 
         $this->assertEquals(
             [''],
-            $this->hide->hideEmail($this->stringWithoutEmail)
+            $this->hide->hideEmailPreg($this->stringWithoutEmail)
         );
         $this->assertEquals(
             [''],
