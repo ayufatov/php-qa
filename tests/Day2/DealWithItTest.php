@@ -11,42 +11,29 @@ class DealWithItTest extends TestCase
     /** @var  DealWithIt */
     private $hide;
 
+    /** @var  string */
+    private $string = '123@5.78 ffew ejffew4324@ ayufatov@avito.ru ayufatov@avito.com jijijiji ayufatov@avito.рф';
+
     public function setUp()
     {
         $this->hide = new DealWithIt();
     }
 
-    /**
-     * @dataProvider successfulProvider
-     * @param string $string
-     */
-    public function test_deal_with_it_hide_email(string $string)
+    public function test_deal_with_it_hide_email()
     {
 
         $this->assertEquals(
             ['*****************', '******************', '*****************'],
-            $this->hide->hideEmail($string)
+            $this->hide->hideEmail($this->string)
         );
     }
 
-    /**
-     * @dataProvider successfulProvider
-     * @param string $string
-     */
-    public function test_deal_with_it_hide_email_no_preg(string $string)
+    public function test_deal_with_it_hide_email_no_preg()
     {
 
         $this->assertEquals(
             ['*****************', '******************', '*****************'],
-            $this->hide->hideEmailNoPreg($string)
+            $this->hide->hideEmailNoPreg($this->string)
         );
-    }
-
-    public function successfulProvider()
-    {
-        yield
-        [
-            '123@5.78 ffew ejffew4324@ ayufatov@avito.ru ayufatov@avito.com jijijiji ayufatov@avito.рф',
-        ];
     }
 }
