@@ -26,6 +26,10 @@ class DealWithItTest extends TestCase
             ['*****************', '******************', '*****************'],
             $this->hide->hideEmail($this->string)
         );
+        $this->assertEquals(
+            ['*****************', '******************', '*****************'],
+            $this->hide->hideEmailNoPreg($this->string)
+        );
     }
 
     public function test_deal_with_it_hide_email_no_preg()
